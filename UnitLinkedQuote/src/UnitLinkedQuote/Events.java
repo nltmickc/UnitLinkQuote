@@ -1,0 +1,5 @@
+package UnitLinkedQuote;
+
+public enum Events {
+	INITIAL, SINGLE, ANNUAL, HALFYEARLY, QUARTERLY, MONTHLY, STARTMONTH, ENDMONTH, FINAL
+}
