@@ -80,9 +80,6 @@ public class DataConnection {
 		    	se = se.getNextException();
 		    }
 		}
-		
 		return rs;
-	       	    
 	}
-	
 }

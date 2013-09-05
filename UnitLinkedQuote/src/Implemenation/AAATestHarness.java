@@ -56,9 +56,9 @@ public class AAATestHarness {
 		//Add Funds
 		Funds _Funds = new Funds();
 														
-			_Funds.AddFund( new Fund( "Fund 1", 0.08, 0.5, new BidOfferSpread() ) );
+			_Funds.AddFund( new MonthlyFund( "Fund 1", 0.08, 0.5, new BidOfferSpread() ) );
 			
-			_Funds.AddFund( new Fund( "Fund 2", 0.50, 0.5, new BidOfferSpread() ) );
+			_Funds.AddFund( new MonthlyFund( "Fund 2", 0.50, 0.5, new BidOfferSpread() ) );
 							
 		//Add charges
 		Charges _Charges = new Charges();

@@ -1,13 +1,6 @@
 package Implemenation;
 
-import UnitLinkedQuote.BidOfferSpread;
-import UnitLinkedQuote.Events;
-import UnitLinkedQuote.Fund;
-import UnitLinkedQuote.FundSwitch;
-import UnitLinkedQuote.Funds;
-import UnitLinkedQuote.Observer;
-import UnitLinkedQuote.Schedule;
-import UnitLinkedQuote.Tick;
+import UnitLinkedQuote.*;
 
 public class CPIFundSwitch extends FundSwitch implements Observer {
 	
@@ -21,13 +14,13 @@ public class CPIFundSwitch extends FundSwitch implements Observer {
 				
 		this._LSS = LSS;
 		
-		Fund temp = new Fund( LSS.getSourceFund(), 0.09, 1.0, new BidOfferSpread() );
+		Fund temp = new MonthlyFund( LSS.getSourceFund(), 0.09, 1.0, new BidOfferSpread() );
 		
 		_Source.AddFund( temp );
 				
 		Schedule.Instance().removeObserver( temp );
 		
-		temp = new Fund( LSS.getDestinationFund(), 0.09, 0.0, new BidOfferSpread() );
+		temp = new MonthlyFund( LSS.getDestinationFund(), 0.09, 0.0, new BidOfferSpread() );
 		
 		_Destination.AddFund( temp );
 		

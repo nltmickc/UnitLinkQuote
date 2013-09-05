@@ -7,36 +7,36 @@ import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement()
-public class Fund implements Observer {
+public abstract class Fund implements Observer {
 	
 	@XmlAttribute
-	private String _Name;
+	protected String _Name;
 	@XmlTransient
-	private double _FundValue;
+	protected double _FundValue;
 	@XmlAttribute
-	private double _InvestPerCent;
+	protected double _InvestPerCent;
 	@XmlElement( name = "BidOfferSpread" )
-	private BidOfferSpread _BidOfferSpread;
+	protected BidOfferSpread _BidOfferSpread;
 	@XmlTransient
-	private Premiums _Premiums;
+	protected Premiums _Premiums;
 	@XmlTransient
-	private Charges _Charges;
+	protected Charges _Charges;
 	@XmlTransient
-	private Tick _Tick;
+	protected Tick _Tick;
 	@XmlAttribute
-	private double _GrossMonthlyGrowthRate;
+	protected double _GrossMonthlyGrowthRate;
 	@XmlTransient
-	private Map<String, Double> _ChargeAmounts = new HashMap<String, Double>();
+	protected Map<String, Double> _ChargeAmounts = new HashMap<String, Double>();
 	@XmlElementWrapper( name = "StartMonthFundValue" )
-	private Map<Integer, Double> _StartMonthFundValues = new HashMap<Integer, Double>();
+	protected Map<Integer, Double> _StartMonthFundValues = new HashMap<Integer, Double>();
 	@XmlElementWrapper( name = "EndMonthFundValues" )
-	private Map<Integer, Double> _EndMonthFundValues = new HashMap<Integer, Double>();
+	protected Map<Integer, Double> _EndMonthFundValues = new HashMap<Integer, Double>();
 	@XmlElementWrapper( name = "MonthlyInvRetAmounts" )
-	private Map<Integer, Double> _InvRetAmounts = new HashMap<Integer, Double>();
+	protected Map<Integer, Double> _InvRetAmounts = new HashMap<Integer, Double>();
 	@XmlElementWrapper( name = "MonthlyChargeAmounts" )
-	private Map<Integer, Double> _MonthlyChargeAmounts = new HashMap<Integer, Double>();
+	protected Map<Integer, Double> _MonthlyChargeAmounts = new HashMap<Integer, Double>();
 	@XmlElementWrapper( name = "MonthlyPremiumAmounts" )
-	private Map<Integer, Double> _MonthlyPremiumAmounts = new HashMap<Integer, Double>();
+	protected Map<Integer, Double> _MonthlyPremiumAmounts = new HashMap<Integer, Double>();
 		
 	public Fund() {}
 	 			
@@ -66,93 +66,14 @@ public class Fund implements Observer {
 		this._Premiums = premiums;
 	}
 		
-	public void ApplyPremiums() {
-		
-		double GrossPremium;
-		double NetPremium;
-		
-		for  ( Premium p : _Premiums ) {
-			
-			GrossPremium = p.getPremium() * _InvestPerCent;
-						
-			NetPremium = p.Apply() * _InvestPerCent * _BidOfferSpread.getBidOfferSpread();
-			
-			UpdateFundPremiumSchedule( GrossPremium );
-			
-			//IRR is based on the premium paid by the customer not allocated to fund.
-			Cashflows.Instance().AddCashflow( _Tick, GrossPremium );
-			
-			_FundValue = _FundValue + NetPremium;
-			
-			System.out.println( "\t\t\t\tNet " + p.getName() + " Premium Amount : " + NetPremium + " in " + _Name);
-		}
-	}
+	//The next four routines implement the fund mechanism.
+	public abstract void ApplyPremiums(); 
 	
-	public void RollUp() {
-		
-		double _InvRet;
-		
-		if ( _Tick.getEvent() == Events.MONTHLY ) {
-			
-			int Month = _Tick.getMonthNumber(); 
-			
-			System.out.println("\t\t\t    " + _Name + " Start Month : " + _FundValue );
-			
-			_StartMonthFundValues.put( Month, _FundValue );
-						
-			_InvRet = _FundValue * _GrossMonthlyGrowthRate;;
-						
-			_FundValue += _InvRet;
-			
-			System.out.println("\t\t\t    " + _Name + " Inv Ret: " + _InvRet);
-			
-			_InvRetAmounts.put( Month,_InvRet );
-			
-			_EndMonthFundValues.put( Month, _FundValue ); 
-			
-			System.out.println("\t\t\t    " + _Name + " End Month : " + _FundValue );
-		}
-	}
+	public abstract void RollUp(); 
 	
-	//Calculate charges - need to pass in funds because the charge my be fund specific 
-	//we need to calculate all charges based on the month end fund value and then deduct them 
-	//all - as the amount to be charged may be dependent on the fund value.  Thus the 
-	//charge amounts would vary depending on the order that the charges are calculated in. 
-	public void CalculateCharges( Funds funds ) {
+	public abstract void CalculateCharges( Funds funds );
 		
-		double Charge = 0;
-		
-		//_ChargeAmounts.clear();
-		
-		for ( Charge c : _Charges ) {
-			
-			System.out.println("\t\t\t    " + _Name + " Before Charge : " + c.getName() + " : " + _FundValue );
-						
-			Charge = c.Apply( this, funds );
-			
-			_ChargeAmounts.put( c.getName(), Charge );
-			
-			System.out.println( "\t\t\t\t" + _Name + " Charge : " + c.getName() + ", Amount: " + Charge );
-		}
-	}
-	
-	//...then deduct previously calculated charges that are stored in the HashMap...
-	public void DeductCharges () {
-		
-		double Temp = 0;
-		
-		for ( Map.Entry<String, Double> CA  : _ChargeAmounts.entrySet() ) {
-			
-			Temp += CA.getValue();;
-			
-		}
-		
-		_MonthlyChargeAmounts.put( _Tick.getMonthNumber(), Temp );
-		
-		_FundValue -= Temp;
-		
-		System.out.println( "\t\t\t    " + _Name + " After Charges : " + _FundValue );
-	}	
+	public abstract void DeductCharges ();
 		
 	@Override
 	public void Update( Tick tick ) {
@@ -231,7 +152,7 @@ public class Fund implements Observer {
 		_InvestPerCent = InvPC;
 	}
 	
-	private void UpdateFundPremiumSchedule(double premiumamount ) {
+	protected void UpdateFundPremiumSchedule(double premiumamount ) {
 		
 		int key = _Tick.getMonthNumber();
 		
