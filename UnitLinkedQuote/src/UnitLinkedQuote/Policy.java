@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement()
+@XmlRootElement( name = "Policy")
 public class Policy {
 	
 	@XmlAttribute()
@@ -22,7 +22,6 @@ public class Policy {
 	@XmlElement(name = "Charges")
 	private Charges _Charges;
 	@XmlTransient
-	//@XmlElement(name = "QuoteStrategy")
 	private QuoteStrategy _QuoteStrategy;
 	@XmlElement(name = "CashFlows")
 	private Cashflows _CashFlows;

@@ -5,10 +5,9 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.*;
 
-@XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement()
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement( name = "Fund")
 public abstract class Fund implements Observer {
-	
 	@XmlAttribute
 	protected String _Name;
 	@XmlTransient
