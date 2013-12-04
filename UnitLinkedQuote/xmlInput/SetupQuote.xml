@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy contractNumber="15082816">
+	<term Years="2" Months="0"/>
+    <Funds>
+        <Fund grossMonthlyGrowthRate="0.00643403011000343" investPerCent="0.5" name="Fund 1">
+            <BidOfferSpread value="1.0"/>
+        </Fund>
+        <Fund grossMonthlyGrowthRate="0.03436608313191658" investPerCent="0.5" name="Fund 2">
+            <BidOfferSpread value="1.0"/>
+        </Fund>
+    </Funds>
+    <Premiums>
+        <Premium premium="300.00" freq="MONTHLY" name="Monthly"/>
+    </Premiums>
+    <Charges>
+        <Charge name="AMC Geometric"/>
+        <Charge name="Pension Levy"/>
+        <Charge name="Fixed Charge"/>
+        <Charge name="Exit Tax"/>
+    </Charges>
+</policy>

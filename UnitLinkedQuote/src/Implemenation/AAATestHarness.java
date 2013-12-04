@@ -26,6 +26,19 @@ public class AAATestHarness {
 		return LSSs;
 	}
 		
+	private static Policy PolicyFactoryText( ) {
+				
+		try {
+			return xmlMarshaller.MarshalInput();
+		}
+		catch (Exception e) {
+			
+			System.out.println(e);
+			
+			return null;
+		}
+	}
+	
 	private static Policy PolicyFactory(String ContractNumber ) {
 		
 		//ContractData _ContractData = new ContractData( ContractNumber );
@@ -91,21 +104,23 @@ public class AAATestHarness {
 		
 		String ContractNumber = "15082816";
 						
-		//build the contract - add premiums, funds & charges to policy object 
-		Policy _Policy = PolicyFactory( ContractNumber );  //re-factor into abstract factory later
+		//Build the contract - add premiums, funds & charges to policy object 
+		//Policy _Policy = PolicyFactory( ContractNumber );  //re-factor into abstract factory later
+		
+		Policy _Policy = PolicyFactoryText();  
 		
 		System.out.println("--------------First Quote Normal--------------------");
 		System.out.println("");
 		
-		// Quotation methods are separated out into 
-		//strategies - normal, zero charges, target etc.
+		//Quotation methods are separated out into 
+		//Strategies - normal, zero charges, target etc.
 		_Policy.setQuoteStrategy( new NormalQuote() );  
 				
 		_Policy.Quote();
 		
 		if ( XML_OUTPUT ) {
 			
-			xmlMarshaller.Marshal( _Policy );
+			xmlMarshaller.MarshalOutput( _Policy );
 		}
            			 		
 		_Policy.Totals();
